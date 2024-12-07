@@ -1,5 +1,6 @@
 package com.innoveworkshop.gametest
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
@@ -10,13 +11,10 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.innoveworkshop.gametest.assets.DroppingCircle
-import com.innoveworkshop.gametest.assets.DroppingRectangle
 import com.innoveworkshop.gametest.engine.Circle
 import com.innoveworkshop.gametest.engine.GameObject
 import com.innoveworkshop.gametest.engine.GameSurface
 import com.innoveworkshop.gametest.engine.Rectangle
-import com.innoveworkshop.gametest.engine.Vector
-import org.w3c.dom.Text
 
 class MainActivity : AppCompatActivity() {
     protected var gameSurface: GameSurface? = null
@@ -24,7 +22,8 @@ class MainActivity : AppCompatActivity() {
     protected var downButton: Button? = null
     protected var leftButton: Button? = null
     protected var rightButton: Button? = null
-    protected var score: TextView? = null
+    protected var scoreTextView: TextView? = null
+    protected var ballCounterTextView: TextView? = null
 
     protected var game: Game? = null
 
@@ -37,29 +36,32 @@ class MainActivity : AppCompatActivity() {
         gameSurface!!.setRootGameObject(game)
 
         setupControls()
-        setUpScore()
+        setUpTexts()
     }
 
-    private fun setUpScore()
+    private fun setUpTexts()
     {
-        score = findViewById<View>(R.id.textView) as TextView
+        scoreTextView = findViewById<View>(R.id.score) as TextView
+
+        ballCounterTextView = findViewById<View>(R.id.ballCounter) as TextView
     }
 
     private fun setupControls() {
         var verticalSpeed = 40f;
         var horizontalSpeed = 40f;
-        //upButton = findViewById<View>(R.id.up_button) as Button
-        //upButton!!.setOnClickListener { game!!.circle!!.position.y -= 10f }
+
+        upButton = findViewById<View>(R.id.up_button) as Button
+        upButton!!.setOnClickListener { game!!.ball!!.counter += 1 }
 
         downButton = findViewById<View>(R.id.down_button) as Button
-        downButton!!.setOnClickListener { game!!.ball!!.dropRateY = 10f }
+        downButton!!.setOnClickListener { game!!.ball!!.launchBall() }
 
 
         leftButton = findViewById<View>(R.id.left_button) as Button
-        leftButton!!.setOnClickListener { game!!.platfrom!!.position.x -= horizontalSpeed }
+        //leftButton!!.setOnClickListener { game!!.platfrom!!.position.x -= horizontalSpeed }
 
         rightButton = findViewById<View>(R.id.right_button) as Button
-        rightButton!!.setOnClickListener { game!!.platfrom!!.position.x += horizontalSpeed }
+        //rightButton!!.setOnClickListener { game!!.platfrom!!.position.x += horizontalSpeed }
     }
 
     inner class Game : GameObject() {
@@ -74,19 +76,22 @@ class MainActivity : AppCompatActivity() {
         var valueBlue: Int = 100;
         var valueRed: Int = 500;
 
+        //var ballCounter = 1;
+
+        @SuppressLint("SetTextI18n")
         override fun onStart(surface: GameSurface?) {
             super.onStart(surface)
 
-            //peggle all
+            //peggle ball
             ball = DroppingCircle(
-                Vector((surface!!.width / 2).toFloat(), (surface.height / 8).toFloat()),
-                (surface.width / 2).toFloat(),
+                (surface!!.width / 2).toFloat(),
                 (surface.height / 6).toFloat(),
                 30f,
-                0f,
                 10f,
-                Color.rgb(128, 140, 80),
-                0
+                10f,
+                Color.rgb(100, 140, 0),
+                0,
+                2
             )
             surface.addGameObject(ball!!)
 
@@ -130,7 +135,7 @@ class MainActivity : AppCompatActivity() {
                 surface.addGameObject(circle)
             }
 
-            Log.e("larghezza", surface.height.toString())
+            Log.e("ball counter", ball!!.counter.toString())
 //            Log.d("Debug", "circleList: ${circleList?.size}")
 //            if (circleList == null || circleList.isEmpty()) {
 //                Log.e("Error", "Circle list is null or empty.")
@@ -155,10 +160,17 @@ class MainActivity : AppCompatActivity() {
 //                )
 //            )
 
+            val mainHandler = Handler(Looper.getMainLooper())
+            mainHandler.post {
+                // This will update the UI safely on the main thread
+                ballCounterTextView?.text = "Ball Counter: ${ball!!.counter}"
+                scoreTextView?.text = "SCORE: $scoreInt"
+            }
 
 
         }
 
+        @SuppressLint("SetTextI18n")
         override fun onFixedUpdate() {
             super.onFixedUpdate()
 
@@ -179,7 +191,7 @@ class MainActivity : AppCompatActivity() {
                     val mainHandler = Handler(Looper.getMainLooper())
                     mainHandler.post {
                         // This will update the UI safely on the main thread
-                        score!!.text = scoreInt.toString()
+                        scoreTextView?.text = "SCORE: $scoreInt"
                     }
                     checkCircle.destroy()
                     // Optionally change ball color or handle further logic
@@ -197,10 +209,17 @@ class MainActivity : AppCompatActivity() {
 
             //amogus
             if (ball!!.isFloored) {
-                ball!!.mirrorYVelocity()
-                Log.d("Score", scoreInt.toString())
-                //ball!!.velocity.x = 0f;
-                //ball!!.velocity.y = 0f;
+
+                ball!!.resetPosition()
+
+                val mainHandler = Handler(Looper.getMainLooper())
+                mainHandler.post {
+                    // This will update the UI safely on the main thread
+                    ballCounterTextView?.text = "Ball Counter: ${ball!!.counter}"
+                }
+
+
+                //Log.e("ball counter", ball!!.counter.toString())
             }
         }
     }

@@ -17,17 +17,26 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="1.0" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/score"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="aaaaaaaaaa"
+        android:text="Score: "
+        app:layout_constraintTop_toBottomOf="@+id/ballCounter"
         tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="56dp"
+        tools:layout_editor_absoluteX="19dp"
         tools:text="@tools:sample/lorem" />
+
+    <TextView
+        android:id="@+id/ballCounter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ball remaining: "
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="19dp"
+        tools:layout_editor_absoluteY="37dp" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/controls_layout"

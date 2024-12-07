@@ -1,32 +1,42 @@
 package com.innoveworkshop.gametest.assets
 
 import android.annotation.SuppressLint
-import android.util.Log
 import com.innoveworkshop.gametest.engine.Circle
 import com.innoveworkshop.gametest.engine.Vector
-import java.lang.String
 
 class DroppingCircle(
-    position: Vector?,
     x: Float,
     y: Float,
     radius: Float,
     dropRateY: Float,
     horizontalDamping: Float,
     color: Int,
-    value: Int
+    value: Int,
+    counter: Int
 ) : Circle(x, y, radius, color, value) {
     private var gravity = 10f;
-    public var dropRateY: Float = 0f
+    public var dropRateY: Float = 10f
     var horizontalDamping: Float = 0f;
 
     var velocity: Vector = Vector(0f, dropRateY)
     private var velocityDeprecation = 10f;
     private var deprecationPerFrame = velocityDeprecation / 240f
 
+    public var counter = 1;
+
+    private var startX = 0f;
+    private var startY = 0f;
+
+    private var isLaunched = false;
+
     init {
 
         this.dropRateY = dropRateY
+
+        this.counter = counter;
+
+        this.startX = x
+        this.startY = y
 
         //velocity.x = 8f;
         //velocity.y = 8f;
@@ -50,7 +60,10 @@ class DroppingCircle(
         //if (!isFloored) position.y += dropRateY
 
         //if (!isFloored) position.x -= dropRateY
-        velocityCalculator()
+        if(counter > 0 && isLaunched){
+            velocityCalculator()
+        }
+
         //is called only once so doesnt reduce the speed as intended
         //if(Math.abs(velocity.x) >= 0 || Math.abs(velocity.y) >= -10f)
 
@@ -144,6 +157,26 @@ class DroppingCircle(
     fun mirrorYVelocity()
     {
         this.velocity.y *= -1;
+    }
+
+    fun resetPosition(){
+        this.position.x = startX
+        this.position.y = startY
+
+        this.velocity.x = 0f
+        this.velocity.y = 0f
+
+        this.counter--
+
+        isLaunched = false
+    }
+
+    fun launchBall(){
+
+        isLaunched = true;
+
+//        this.dropRateY = 10f;
+//        this.gravity = 10f;
     }
 
 }
