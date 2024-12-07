@@ -34,7 +34,7 @@ abstract class GameObject {
 
     open fun onFixedUpdate() {
         if (isDestroyed) {
-            setPosition(-100f, -100f)
+            setPosition(5f, 3f)
         }
     }
 
