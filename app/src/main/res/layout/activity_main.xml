@@ -19,6 +19,16 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
 
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="aaaaaaaaaa"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="56dp"
+        tools:text="@tools:sample/lorem" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/controls_layout"
         android:layout_width="0dp"

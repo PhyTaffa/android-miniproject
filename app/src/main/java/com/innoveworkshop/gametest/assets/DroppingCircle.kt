@@ -13,14 +13,15 @@ class DroppingCircle(
     radius: Float,
     dropRateY: Float,
     horizontalDamping: Float,
-    color: Int
-) : Circle(x, y, radius, color) {
+    color: Int,
+    value: Int
+) : Circle(x, y, radius, color, value) {
     private var gravity = 10f;
-    private var dropRateY: Float = 10f
-    var horizontalDamping: Float = 10f;
+    public var dropRateY: Float = 0f
+    var horizontalDamping: Float = 0f;
 
-     var velocity: Vector = Vector(0f, this.dropRateY)
-    private var velocityDeprecation = 2f;
+    var velocity: Vector = Vector(0f, dropRateY)
+    private var velocityDeprecation = 10f;
     private var deprecationPerFrame = velocityDeprecation / 240f
 
     init {
@@ -49,10 +50,10 @@ class DroppingCircle(
         //if (!isFloored) position.y += dropRateY
 
         //if (!isFloored) position.x -= dropRateY
-
+        velocityCalculator()
         //is called only once so doesnt reduce the speed as intended
-        if(Math.abs(velocity.x) >= 0 || Math.abs(velocity.y) >= -10f)
-            velocityCalculator()
+        //if(Math.abs(velocity.x) >= 0 || Math.abs(velocity.y) >= -10f)
+
 
 
     }
@@ -95,10 +96,10 @@ class DroppingCircle(
             var directionY: Float
             directionY = (this.position.y - circleCollided.position.y);
 
-            var distance :Double;
-            distance = Math.sqrt( distanceXsquared + distanceYsquared )
+            var magnitude :Double;
+            magnitude = Math.sqrt( distanceXsquared + distanceYsquared )
 
-            if(distance < radiusSum)
+            if(magnitude < radiusSum)
             {
 //                val spingiOstia = String.format(
 //                    "{\"DroppingCircle x\":%f, \"DroppingCircle Y\":%f, \"DroppingCircle R\":%f, \"Circle X\":%f, \"Circle Y\":%f, \"Circle R\":%f}",
@@ -110,7 +111,7 @@ class DroppingCircle(
 
                 //dropRateY = 0f;
 
-                BounceCalculator(directionX, directionY)
+                BounceCalculator(directionX, directionY, magnitude)
                 return true;
             }else
                 return false;
@@ -119,16 +120,20 @@ class DroppingCircle(
         //return (position.x + width / 2) >= gameSurface!!.width
     }
 
-    private fun BounceCalculator(directionX :Float, directionY: Float){
+    private fun BounceCalculator(directionX :Float, directionY: Float, magnitude: Double){
 
 //        Log.v("Alleged direction from static ball to dropping ball ",
 //            "X: $directionX Y:$directionY"
 //        )
 
+        velocity.x = 0f;
+        velocity.y = 0f;
 
-        velocity.x += directionX;
-        velocity.y += directionY;
+        velocity.x += (directionX/magnitude.toFloat() * magnitude.toFloat());
+        velocity.y += (directionY/magnitude.toFloat() * magnitude.toFloat());
 
+        //Log.v("suca X",velocity.x.toString())
+        //Log.v("suca Y",velocity.y.toString())
     }
 
     fun mirrorXVelocity()
