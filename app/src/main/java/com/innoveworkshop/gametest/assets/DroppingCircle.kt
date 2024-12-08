@@ -1,6 +1,7 @@
 package com.innoveworkshop.gametest.assets
 
 import android.annotation.SuppressLint
+import android.util.Log
 import com.innoveworkshop.gametest.engine.Circle
 import com.innoveworkshop.gametest.engine.Vector
 
@@ -14,18 +15,20 @@ class DroppingCircle(
     value: Int,
     counter: Int
 ) : Circle(x, y, radius, color, value) {
-    private var gravity = 10f;
+    private var gravity = 6f;
     public var dropRateY: Float = 10f
     var horizontalDamping: Float = 0f;
 
     var velocity: Vector = Vector(0f, dropRateY)
     private var velocityDeprecation = 10f;
-    private var deprecationPerFrame = velocityDeprecation / 240f
+    private var deprecationPerFrame = velocityDeprecation / 10f
 
     public var counter = 1;
 
     private var startX = 0f;
     private var startY = 0f;
+
+
 
     private var isLaunched = false;
 
@@ -71,26 +74,69 @@ class DroppingCircle(
 
     }
 
+    @SuppressLint("DefaultLocale")
     fun velocityCalculator() {
-        position.x += velocity.x;
-        position.y += velocity.y;
-        //Log.e("speed", velocity.y.toString())
+        // Apply forces and update velocity
 
-
+        // X Velocity Damping (Friction/Drag)
         if (Math.abs(velocity.x) <= 0f) {
-            velocity.x = 0f;
+            velocity.x = 0f
         } else {
-            //Log.e("speed X", velocity.x.toString())
-            velocity.x -= Math.signum(velocity.x) * deprecationPerFrame;
+            // Apply linear velocity reduction (friction)
+            velocity.x -= Math.signum(velocity.x) * deprecationPerFrame
         }
 
-        if (Math.abs(velocity.y) <= gravity) {
-            velocity.y = dropRateY;
-        } else {
-            //Log.e("speed Y", velocity.y.toString())
-            velocity.y -= Math.signum(velocity.y) * deprecationPerFrame;
+        var airResistanceFactor = 0.1f
+        var smallThreshold = 0.01f
+
+        // Apply air resistance (for upward motion)
+        if (velocity.y > 0) {
+            velocity.y -= velocity.y * airResistanceFactor  // Slow down upwards motion due to air resistance
+        }
+
+        // Apply gravity (always pulling downwards)
+        velocity.y += gravity  // Gravity should always be considered, regardless of motion direction
+
+        // Prevent the object from getting stuck at zero velocity and ensure smooth transition
+        if (Math.abs(velocity.y) < smallThreshold) {
+            // Once the velocity becomes very small, allow gravity to take over and pull down
+            if (velocity.y >= 0) {
+                velocity.y = 0f  // Stop upward motion once it reaches near zero
+            }
+            // Ensure gravity is applied immediately after the velocity reaches near zero
+            if (velocity.y == 0f) {
+                velocity.y += gravity  // Gravity starts pulling down after stop
+            }
+        }
+
+        var minClamp = -100f
+        var maxClamp = 100f
+        // Clamping the velocity between -100 and 100 for both X and Y
+        velocity.x = clamp(velocity.x, minClamp, maxClamp)
+        velocity.y = clamp(velocity.y, minClamp, maxClamp)
+
+        // Now that the velocity is calculated and clamped, update the position
+        position.x += velocity.x
+        position.y += velocity.y
+
+        // Log the current velocities
+        val spingiOstia = String.format(
+            "{\"Applied Velocity X\":%f, \"Applied Velocity Y\":%f}",
+            velocity.x, velocity.y
+        )
+        Log.d("Velocity Current", spingiOstia)
+    }
+
+    // Clamp function to limit the velocity between a minimum and maximum value
+    private fun clamp(value: Float, min: Float, max: Float): Float {
+        return when {
+            value < min -> min
+            value > max -> max
+            else -> value
         }
     }
+
+
 
 
     @SuppressLint("DefaultLocale")
@@ -124,7 +170,7 @@ class DroppingCircle(
 
                 //dropRateY = 0f;
 
-                BounceCalculator(directionX, directionY, magnitude)
+                BounceCalculator(directionX, directionY)
                 return true;
             }else
                 return false;
@@ -133,17 +179,29 @@ class DroppingCircle(
         //return (position.x + width / 2) >= gameSurface!!.width
     }
 
-    private fun BounceCalculator(directionX :Float, directionY: Float, magnitude: Double){
+    @SuppressLint("DefaultLocale")
+    private fun BounceCalculator(directionX :Float, directionY: Float){
 
 //        Log.v("Alleged direction from static ball to dropping ball ",
 //            "X: $directionX Y:$directionY"
 //        )
+        var scaleFactor = 65f;
 
+        var magnitude = Math.sqrt((directionX * directionX + directionY * directionY).toDouble())
+        //resets the velocity for smoother bounce
         velocity.x = 0f;
         velocity.y = 0f;
 
-        velocity.x += (directionX/magnitude.toFloat() * magnitude.toFloat());
-        velocity.y += (directionY/magnitude.toFloat() * magnitude.toFloat());
+
+
+        velocity.x += directionX/magnitude.toFloat() * scaleFactor;
+        velocity.y += directionY/magnitude.toFloat() * scaleFactor;
+
+        val spingiOstia = String.format(
+            "{\"Applied Velocity X\":%f, \"Applied Velocity Y\":%f}",
+            velocity.x, velocity.y
+        )
+        Log.d("Velocity Applied", spingiOstia)
 
         //Log.v("suca X",velocity.x.toString())
         //Log.v("suca Y",velocity.y.toString())

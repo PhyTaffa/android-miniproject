@@ -85,7 +85,7 @@ class MainActivity : AppCompatActivity() {
             //peggle ball
             ball = DroppingCircle(
                 (surface!!.width / 2).toFloat(),
-                (surface.height / 6).toFloat(),
+                (surface.height / 8).toFloat(),
                 30f,
                 10f,
                 10f,
@@ -129,10 +129,17 @@ class MainActivity : AppCompatActivity() {
                 } else {
                     Circle(randomX, randomY, radius, Color.BLUE, valueBlue)
                 }
+//                            circle = Circle(
+//                (surface.width / 2).toFloat(),
+//                (surface.height / 2).toFloat(),
+//                40f,
+//                Color.RED,
+//                valueRed
+//            )
 
                 // Add circle to the list and surface
-                circleList.add(circle)
-                surface.addGameObject(circle)
+                circleList.add(circle!!)
+                surface.addGameObject(circle!!)
             }
 
             Log.e("ball counter", ball!!.counter.toString())
