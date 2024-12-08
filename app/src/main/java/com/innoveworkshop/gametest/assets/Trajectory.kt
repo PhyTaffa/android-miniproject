@@ -38,28 +38,22 @@ class Trajectory(
         }
 
     }
-    //Pair<Double, Double>
-    fun plotting(angle: Float) {
+    //
+    fun plotting() : Pair<Float, Float> {
         // Set the radius to 1 (unit distance)
         val radius = 1f
 
         // Adjust the angle so that 0° points downward (towards increasing Y)
         // Positive angles go right, negative angles go left
-        var adjustedAngle = angle
+        var adjustedAngle = this.angle
 
-        // Ensure the angle is between -90 and 90 degrees
-//        if (adjustedAngle > 90) {
-//            adjustedAngle = 90f
-//        } else if (adjustedAngle < -90) {
-//            adjustedAngle = -90f
-//        }
 
         // Convert the angle to radians
         val angleInRadians = Math.toRadians(adjustedAngle.toDouble())
 
         // Calculate the direction vector components based on the adjusted angle
         val direction_x = (startX) * Math.sin(angleInRadians)  // X = sin(θ)
-        val direction_y = (startX) * Math.cos(angleInRadians)  // Y = cos(θ)
+        val direction_y = (startY) * Math.cos(angleInRadians)  // Y = cos(θ)
 
         // Calculate the new x and y end positions based on the direction
         val (endX, endY) = normalize(direction_x, direction_y)
@@ -69,23 +63,23 @@ class Trajectory(
         Log.e("punti finali", "X: $endX  Y: $endY")
 
         // Return the new position as a Pair of x and y
-        //return Pair(endX, endY)
+        return Pair(endX, endY)
     }
 
-    private fun normalize(x: Double, y: Double): Pair<Double, Double> {
+    private fun normalize(x: Double, y: Double): Pair<Float, Float> {
         // Calculate the magnitude of the vector (x, y)
         val magnitude = Math.sqrt((x * x + y * y).toDouble()).toFloat()
 
         // Avoid division by zero (if magnitude is 0, return the original coordinates)
         if (magnitude == 0f) {
-            return Pair(x, y)
+            return Pair(x.toFloat(), y.toFloat())
         }
 
         // Normalize the vector
         val normalizedX = x / magnitude
         val normalizedY = y / magnitude
 
-        return Pair(normalizedX, normalizedY)
+        return Pair(normalizedX.toFloat(), normalizedY.toFloat())
     }
 
 

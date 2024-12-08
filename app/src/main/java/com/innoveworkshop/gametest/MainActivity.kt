@@ -56,10 +56,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupControls() {
         upButton = findViewById<View>(R.id.up_button) as Button
-        upButton!!.setOnClickListener { game!!.ball!!.counter += 1; trajectory?.plotting(trajectory!!.angle) }
+        upButton!!.setOnClickListener { game!!.ball!!.counter += 1; trajectory?.plotting() }
 
         downButton = findViewById<View>(R.id.down_button) as Button
-        downButton!!.setOnClickListener { game!!.ball!!.launchBall() }
+        downButton!!.setOnClickListener { game!!.ball!!.launchBall(trajectory!!) }
 
 
         leftButton = findViewById<View>(R.id.left_button) as Button

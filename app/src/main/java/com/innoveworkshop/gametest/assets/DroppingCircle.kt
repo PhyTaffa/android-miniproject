@@ -243,9 +243,16 @@ class DroppingCircle(
         isLaunched = false
     }
 
-    fun launchBall(){
+    fun launchBall(trajectoryRef: Trajectory){
+
+        var (rotationX, rotationY) = trajectoryRef.plotting()
+
+        BounceCalculator(rotationX, rotationY, this.position.y)
 
         isLaunched = true;
+
+        // should receive the value rotated of the trajecotry and
+        // apply it via teh bounceCalculator
 
 //        this.dropRateY = 10f;
 //        this.gravity = 10f;
