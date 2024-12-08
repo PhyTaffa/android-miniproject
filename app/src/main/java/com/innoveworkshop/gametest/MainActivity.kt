@@ -121,7 +121,7 @@ class MainActivity : AppCompatActivity() {
 
             for (i in 1..20) {
                 val randomX = (Math.random() * (surface.width - radius)).toFloat() // Random X within a range
-                val randomY = (Math.random() * surface.height).toFloat() // Random Y within a range
+                val randomY = (Math.random() * (surface.height - radius)).toFloat()
 
                 // Create circle object based on the condition
                 val circle = if (i % 5 == 0) {

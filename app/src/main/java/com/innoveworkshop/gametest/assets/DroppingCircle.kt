@@ -15,13 +15,13 @@ class DroppingCircle(
     value: Int,
     counter: Int
 ) : Circle(x, y, radius, color, value) {
-    private var gravity = 6f;
+    private var gravity = 4f;
     public var dropRateY: Float = 10f
     var horizontalDamping: Float = 0f;
 
     var velocity: Vector = Vector(0f, dropRateY)
     private var velocityDeprecation = 10f;
-    private var deprecationPerFrame = velocityDeprecation / 10f
+    private var deprecationPerFrame = velocityDeprecation / 60f
 
     public var counter = 1;
 
@@ -76,7 +76,12 @@ class DroppingCircle(
 
     @SuppressLint("DefaultLocale")
     fun velocityCalculator() {
-        // Apply forces and update velocity
+
+        var minClamp = -50f
+        var maxClamp = 50f
+
+        velocity.x = clamp(velocity.x, minClamp, maxClamp)
+        velocity.y = clamp(velocity.y, minClamp, maxClamp)
 
         // X Velocity Damping (Friction/Drag)
         if (Math.abs(velocity.x) <= 0f) {
@@ -109,8 +114,7 @@ class DroppingCircle(
             }
         }
 
-        var minClamp = -100f
-        var maxClamp = 100f
+
         // Clamping the velocity between -100 and 100 for both X and Y
         velocity.x = clamp(velocity.x, minClamp, maxClamp)
         velocity.y = clamp(velocity.y, minClamp, maxClamp)
@@ -193,7 +197,6 @@ class DroppingCircle(
         velocity.y = 0f;
 
 
-
         velocity.x += directionX/magnitude.toFloat() * scaleFactor;
         velocity.y += directionY/magnitude.toFloat() * scaleFactor;
 
@@ -209,12 +212,12 @@ class DroppingCircle(
 
     fun mirrorXVelocity()
     {
-        this.velocity.x *= -1;
+        this.velocity.x *= -0.9f;
     }
 
     fun mirrorYVelocity()
     {
-        this.velocity.y *= -1;
+        this.velocity.y *= -0.9f;
     }
 
     fun resetPosition(){
