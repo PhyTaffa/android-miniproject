@@ -77,11 +77,13 @@ class DroppingCircle(
     @SuppressLint("DefaultLocale")
     fun velocityCalculator() {
 
-        var minClamp = -50f
-        var maxClamp = 50f
 
-        velocity.x = clamp(velocity.x, minClamp, maxClamp)
-        velocity.y = clamp(velocity.y, minClamp, maxClamp)
+        var minClampX = -35f
+        var maxClampX = 35f
+
+        var minClampY = -60f
+        var maxClampY = 50f
+
 
         // X Velocity Damping (Friction/Drag)
         if (Math.abs(velocity.x) <= 0f) {
@@ -116,8 +118,8 @@ class DroppingCircle(
 
 
         // Clamping the velocity between -100 and 100 for both X and Y
-        velocity.x = clamp(velocity.x, minClamp, maxClamp)
-        velocity.y = clamp(velocity.y, minClamp, maxClamp)
+        velocity.x = clamp(velocity.x, minClampX, maxClampX)
+        velocity.y = clamp(velocity.y, minClampY, maxClampY)
 
         // Now that the velocity is calculated and clamped, update the position
         position.x += velocity.x
@@ -174,7 +176,7 @@ class DroppingCircle(
 
                 //dropRateY = 0f;
 
-                BounceCalculator(directionX, directionY)
+                BounceCalculator(directionX, directionY, circleCollided.position.y)
                 return true;
             }else
                 return false;
@@ -184,12 +186,14 @@ class DroppingCircle(
     }
 
     @SuppressLint("DefaultLocale")
-    private fun BounceCalculator(directionX :Float, directionY: Float){
+    private fun BounceCalculator(directionX :Float, directionY: Float, collisionRelativePos: Float){
 
 //        Log.v("Alleged direction from static ball to dropping ball ",
 //            "X: $directionX Y:$directionY"
 //        )
-        var scaleFactor = 65f;
+        var scaleFactorX = 40f;
+        var scaleFactorYUp = 200000f;
+        var scaleFactorYDown = 1000000f;
 
         var magnitude = Math.sqrt((directionX * directionX + directionY * directionY).toDouble())
         //resets the velocity for smoother bounce
@@ -197,8 +201,15 @@ class DroppingCircle(
         velocity.y = 0f;
 
 
-        velocity.x += directionX/magnitude.toFloat() * scaleFactor;
-        velocity.y += directionY/magnitude.toFloat() * scaleFactor;
+        velocity.x += directionX/magnitude.toFloat() * scaleFactorX;
+
+        if(this.position.y <= collisionRelativePos)
+        {
+            velocity.y += directionY/magnitude.toFloat() * scaleFactorYUp;
+        }else{
+            velocity.y += directionY/magnitude.toFloat() * scaleFactorYDown;
+        }
+
 
         val spingiOstia = String.format(
             "{\"Applied Velocity X\":%f, \"Applied Velocity Y\":%f}",
@@ -212,12 +223,12 @@ class DroppingCircle(
 
     fun mirrorXVelocity()
     {
-        this.velocity.x *= -0.9f;
+        this.velocity.x *= -0.99f;
     }
 
     fun mirrorYVelocity()
     {
-        this.velocity.y *= -0.9f;
+        this.velocity.y *= -0.99f;
     }
 
     fun resetPosition(){

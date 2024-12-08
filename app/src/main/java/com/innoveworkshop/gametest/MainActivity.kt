@@ -129,7 +129,7 @@ class MainActivity : AppCompatActivity() {
                 } else {
                     Circle(randomX, randomY, radius, Color.BLUE, valueBlue)
                 }
-//                            circle = Circle(
+//                circle = Circle(
 //                (surface.width / 2).toFloat(),
 //                (surface.height / 2).toFloat(),
 //                40f,
