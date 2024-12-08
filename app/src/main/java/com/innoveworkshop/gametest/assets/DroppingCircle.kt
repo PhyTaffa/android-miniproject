@@ -126,11 +126,11 @@ class DroppingCircle(
         position.y += velocity.y
 
         // Log the current velocities
-        val spingiOstia = String.format(
-            "{\"Applied Velocity X\":%f, \"Applied Velocity Y\":%f}",
-            velocity.x, velocity.y
-        )
-        Log.d("Velocity Current", spingiOstia)
+//        val spingiOstia = String.format(
+//            "{\"Applied Velocity X\":%f, \"Applied Velocity Y\":%f}",
+//            velocity.x, velocity.y
+//        )
+//        Log.d("Velocity Current", spingiOstia)
     }
 
     // Clamp function to limit the velocity between a minimum and maximum value
