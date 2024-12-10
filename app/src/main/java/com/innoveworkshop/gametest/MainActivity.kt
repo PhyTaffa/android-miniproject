@@ -96,7 +96,7 @@ class MainActivity : AppCompatActivity() {
         var scoreInt = 0;
         //var scoreText: String = "";
         var valueBlue: Int = 100;
-        var valueRed: Int = 500;
+        var valueRed: Int = 300;
 
         var startX = 0;
         var startY = 0
