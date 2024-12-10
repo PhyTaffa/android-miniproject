@@ -5,7 +5,6 @@ import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
@@ -15,7 +14,6 @@ import com.innoveworkshop.gametest.assets.Trajectory
 import com.innoveworkshop.gametest.engine.Circle
 import com.innoveworkshop.gametest.engine.GameObject
 import com.innoveworkshop.gametest.engine.GameSurface
-import com.innoveworkshop.gametest.engine.Rectangle
 import com.innoveworkshop.gametest.assets.PegRandomSpawns
 
 class MainActivity : AppCompatActivity() {
@@ -78,8 +76,9 @@ class MainActivity : AppCompatActivity() {
         smallIncrease!!.setOnClickListener { TrajectoryUpdate(+1f) }
     }
 
+    //change this into a function into the trajectory
     private fun TrajectoryUpdate(delta: Float) {
-        trajectory?.angleVariation(delta)
+        trajectory?.variateAngle(delta)
 
         var angelDisplayValue = trajectory!!.angle
 
@@ -91,16 +90,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     inner class Game : GameObject() {
-        var circleList = mutableListOf<Circle>()
+        private var circleList = mutableListOf<Circle>()
         var circle: Circle? = null
         var ball: DroppingCircle? = null
-        var scoreInt = 0;
+        private var scoreInt = 0;
         //var scoreText: String = "";
-        var valueBlue: Int = 100;
-        var valueRed: Int = 300;
+        private var valueBlue: Int = 100;
+        private var valueRed: Int = 300;
 
-        var startX = 0;
-        var startY = 0
+        private var startX = 0;
+        private var startY = 0
 
         //var ballCounter = 1;
 
@@ -124,7 +123,7 @@ class MainActivity : AppCompatActivity() {
             ball = DroppingCircle(
                 (startX).toFloat(),
                 (startY).toFloat(),
-                30f,
+                40f,
                 10f,
                 10f,
                 Color.rgb(100, 140, 0),
@@ -134,7 +133,7 @@ class MainActivity : AppCompatActivity() {
             surface.addGameObject(ball!!)
 
             //boundries for height
-            var radius = 40f;
+            var radius = 50f;
 
 //            for (i in 1..20) {
 //                val randomX = (Math.random() * (surface.width - radius)).toFloat() // Random X within a range

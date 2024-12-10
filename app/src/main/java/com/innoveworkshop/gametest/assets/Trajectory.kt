@@ -2,6 +2,9 @@ package com.innoveworkshop.gametest.assets
 
 import android.util.Log
 import com.innoveworkshop.gametest.engine.GameObject
+import kotlin.math.cos
+import kotlin.math.sin
+import kotlin.math.sqrt
 
 class Trajectory(
     x: Float,
@@ -25,7 +28,7 @@ class Trajectory(
         //trajectoryPlotting(angle)
     }
 
-    fun angleVariation(delta: Float){
+    fun variateAngle(delta: Float){
 
         angle += delta
 
@@ -52,11 +55,11 @@ class Trajectory(
         val angleInRadians = Math.toRadians(adjustedAngle.toDouble())
 
         // Calculate the direction vector components based on the adjusted angle
-        val direction_x = (radius) * Math.sin(angleInRadians)  // X = sin(θ)
-        val direction_y = (radius) * Math.cos(angleInRadians)  // Y = cos(θ)
+        val directionX = (radius) * sin(angleInRadians)  // X = sin(θ)
+        val directionY = (radius) * cos(angleInRadians)  // Y = cos(θ)
 
         // Calculate the new x and y end positions based on the direction
-        val (endX, endY) = normalize(direction_x, direction_y)
+        val (endX, endY) = normalize(directionX, directionY)
 //        val endX = direction_x
 //        val endY = direction_y
 
@@ -68,7 +71,7 @@ class Trajectory(
 
     private fun normalize(x: Double, y: Double): Pair<Float, Float> {
         // Calculate the magnitude of the vector (x, y)
-        val magnitude = Math.sqrt((x * x + y * y).toDouble()).toFloat()
+        val magnitude = sqrt(x * x + y * y).toFloat()
 
         // Avoid division by zero (if magnitude is 0, return the original coordinates)
         if (magnitude == 0f) {
