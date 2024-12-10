@@ -1,21 +1,21 @@
 package com.innoveworkshop.gametest.assets
 
+import android.view.Surface
 import com.innoveworkshop.gametest.engine.Circle
+import com.innoveworkshop.gametest.engine.GameSurface
 import kotlin.math.pow
 import kotlin.random.Random
 
 class PegRandomSpawns(
     private val radius: Float,
-    val colorRed: Int,
-    val colorBlue: Int,
+    private val colorRed: Int,
+    private val colorBlue: Int,
     private val valueRed: Int,
     private val valueBlue: Int,
-    existingCircles: List<Circle>,  // Input list of existing circles
-    private val screenWidth: Float,
-    private val screenHeight: Float
+    private val surface: GameSurface,  // Reference to the Surface (not used here yet)
+    private val screenWidth: Int,
+    private val screenHeight: Int
 ) {
-    // Use the provided existingCircles directly (no redeclaration)
-    private val existingCircles = existingCircles.toMutableList()
 
     // Function to generate a list of pegs (circles)
     fun generatePegs(numberOfPegToGenerate: Int): List<Circle> {
@@ -23,7 +23,7 @@ class PegRandomSpawns(
 
         // Loop to generate the required number of circles
         repeat(numberOfPegToGenerate) { index ->
-            var newCircle: Circle? = null // Declare newCircle as nullable to handle initialization
+            var newCircle: Circle? = null  // Declare newCircle as nullable to handle initialization
             var isValidPosition = false
 
             // Keep trying until we get a valid position
@@ -41,11 +41,12 @@ class PegRandomSpawns(
 
                 newCircle = Circle(randomX, randomY, radius, chosenColor, chosenValue)
 
-                // Check if the new position does not overlap with any existing circles
+                // Check if the new position does not overlap with any already generated circles
                 isValidPosition = true
-                for (circle in existingCircles) {
+                for (circle in generatedCircles) {
                     val distance = Math.sqrt(
-                        ((newCircle!!.position.x - circle.position.x).toDouble().pow(2.0) + (newCircle.position.y - circle.position.y).toDouble().pow(2.0))
+                        ((newCircle!!.position.x - circle.position.x).toDouble().pow(2.0) +
+                                (newCircle.position.y - circle.position.y).toDouble().pow(2.0))
                     )
                     if (distance < (newCircle.radius + circle.radius)) {
                         isValidPosition = false
@@ -54,19 +55,12 @@ class PegRandomSpawns(
                 }
             }
 
-            // Add the valid circle to the list of existing circles
-            newCircle?.let { existingCircles.add(it) } // Safely add the newCircle if not null
-
-            // Add the new circle to the generatedCircles list
+            // Add the valid circle to the generatedCircles list
             newCircle?.let { generatedCircles.add(it) }
+            surface.addGameObject(newCircle!!)
         }
 
         // Return the list of generated circles
         return generatedCircles
-    }
-
-    // Optionally, you can access existing circles
-    fun getExistingCircles(): List<Circle> {
-        return existingCircles
     }
 }

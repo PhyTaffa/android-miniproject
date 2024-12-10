@@ -16,6 +16,7 @@ import com.innoveworkshop.gametest.engine.Circle
 import com.innoveworkshop.gametest.engine.GameObject
 import com.innoveworkshop.gametest.engine.GameSurface
 import com.innoveworkshop.gametest.engine.Rectangle
+import com.innoveworkshop.gametest.assets.PegRandomSpawns
 
 class MainActivity : AppCompatActivity() {
     protected var gameSurface: GameSurface? = null
@@ -90,7 +91,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     inner class Game : GameObject() {
-        val circleList = mutableListOf<Circle>()
+        var circleList = mutableListOf<Circle>()
         var circle: Circle? = null
         var ball: DroppingCircle? = null
         var scoreInt = 0;
@@ -135,29 +136,42 @@ class MainActivity : AppCompatActivity() {
             //boundries for height
             var radius = 40f;
 
-            for (i in 1..20) {
-                val randomX = (Math.random() * (surface.width - radius)).toFloat() // Random X within a range
-                val randomY = (Math.random() * (surface.height - radius)).toFloat()
+//            for (i in 1..20) {
+//                val randomX = (Math.random() * (surface.width - radius)).toFloat() // Random X within a range
+//                val randomY = (Math.random() * (surface.height - radius)).toFloat()
+//
+//                // Create circle object based on the condition
+//                val circle = if (i % 5 == 0) {
+//                    Circle(randomX, randomY, radius, Color.RED, valueRed)
+//                } else {
+//                    Circle(randomX, randomY, radius, Color.BLUE, valueBlue)
+//                }
+////                circle = Circle(
+////                (surface.width / 2).toFloat(),
+////                (surface.height / 2).toFloat(),
+////                40f,
+////                Color.RED,
+////                valueRed
+////            )
+//
+//                // Add circle to the list and surface
+//                circleList.add(circle!!)
+//                surface.addGameObject(circle!!)
+//            }
+//
+            var pegController = PegRandomSpawns(
+                radius = radius,
+                colorRed = Color.RED,
+                colorBlue = Color.BLUE,
+                valueRed = valueRed,
+                valueBlue = valueBlue,
+                surface = surface,
+                screenHeight = surface.height,
+                screenWidth = surface.width
+            )
 
-                // Create circle object based on the condition
-                val circle = if (i % 5 == 0) {
-                    Circle(randomX, randomY, radius, Color.RED, valueRed)
-                } else {
-                    Circle(randomX, randomY, radius, Color.BLUE, valueBlue)
-                }
-//                circle = Circle(
-//                (surface.width / 2).toFloat(),
-//                (surface.height / 2).toFloat(),
-//                40f,
-//                Color.RED,
-//                valueRed
-//            )
+            circleList = pegController.generatePegs(20).toMutableList();
 
-                // Add circle to the list and surface
-                circleList.add(circle!!)
-                surface.addGameObject(circle!!)
-            }
-    
             val mainHandler = Handler(Looper.getMainLooper())
             mainHandler.post {
                 // This will update the UI safely on the main thread
