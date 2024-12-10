@@ -52,8 +52,8 @@ class Trajectory(
         val angleInRadians = Math.toRadians(adjustedAngle.toDouble())
 
         // Calculate the direction vector components based on the adjusted angle
-        val direction_x = (startX) * Math.sin(angleInRadians)  // X = sin(θ)
-        val direction_y = (startY) * Math.cos(angleInRadians)  // Y = cos(θ)
+        val direction_x = (radius) * Math.sin(angleInRadians)  // X = sin(θ)
+        val direction_y = (radius) * Math.cos(angleInRadians)  // Y = cos(θ)
 
         // Calculate the new x and y end positions based on the direction
         val (endX, endY) = normalize(direction_x, direction_y)

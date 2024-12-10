@@ -23,6 +23,8 @@ class MainActivity : AppCompatActivity() {
     protected var downButton: Button? = null
     protected var leftButton: Button? = null
     protected var rightButton: Button? = null
+    protected var smallDecrease: Button? = null
+    protected var smallIncrease: Button? = null
     protected var scoreTextView: TextView? = null
     protected var ballCounterTextView: TextView? = null
     protected var debugTextView: TextView? = null
@@ -62,11 +64,17 @@ class MainActivity : AppCompatActivity() {
         downButton!!.setOnClickListener { game!!.ball!!.launchBall(trajectory!!) }
 
 
-        leftButton = findViewById<View>(R.id.left_button) as Button
+        leftButton = findViewById<View>(R.id.big_decrease) as Button
         leftButton!!.setOnClickListener { TrajectoryUpdate(-10f) }
 
-        rightButton = findViewById<View>(R.id.right_button) as Button
+        rightButton = findViewById<View>(R.id.big_increase) as Button
         rightButton!!.setOnClickListener { TrajectoryUpdate(+10f) }
+
+        smallDecrease = findViewById<View>(R.id.small_decrease) as Button
+        smallDecrease!!.setOnClickListener { TrajectoryUpdate(-1f) }
+
+        smallIncrease = findViewById<View>(R.id.small_increase) as Button
+        smallIncrease!!.setOnClickListener { TrajectoryUpdate(+1f) }
     }
 
     private fun TrajectoryUpdate(delta: Float) {
@@ -149,7 +157,7 @@ class MainActivity : AppCompatActivity() {
                 circleList.add(circle!!)
                 surface.addGameObject(circle!!)
             }
-
+    
             val mainHandler = Handler(Looper.getMainLooper())
             mainHandler.post {
                 // This will update the UI safely on the main thread

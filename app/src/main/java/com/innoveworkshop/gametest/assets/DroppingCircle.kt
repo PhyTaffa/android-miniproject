@@ -78,8 +78,8 @@ class DroppingCircle(
     fun velocityCalculator() {
 
 
-        var minClampX = -35f
-        var maxClampX = 35f
+        var minClampX = -50f
+        var maxClampX = 50f
 
         var minClampY = -60f
         var maxClampY = 50f
@@ -147,7 +147,7 @@ class DroppingCircle(
 
     @SuppressLint("DefaultLocale")
     fun CollideWithCircle(circleCollided: Circle): Boolean {
-        if(!circleCollided.isDestroyed){
+        if(!circleCollided.isDestroyed){ // cna be deleted due to listing like in schindler's
 
             var radiusSum = (this.radius + circleCollided.radius).toDouble();
 
@@ -164,7 +164,7 @@ class DroppingCircle(
             var magnitude :Double;
             magnitude = Math.sqrt( distanceXsquared + distanceYsquared )
 
-            if(magnitude < radiusSum)
+            if(magnitude <= radiusSum)
             {
 //                val spingiOstia = String.format(
 //                    "{\"DroppingCircle x\":%f, \"DroppingCircle Y\":%f, \"DroppingCircle R\":%f, \"Circle X\":%f, \"Circle Y\":%f, \"Circle R\":%f}",
@@ -191,9 +191,9 @@ class DroppingCircle(
 //        Log.v("Alleged direction from static ball to dropping ball ",
 //            "X: $directionX Y:$directionY"
 //        )
-        var scaleFactorX = 40f;
-        var scaleFactorYUp = 200000f;
-        var scaleFactorYDown = 1000000f;
+        var scaleFactorX = 60f;
+        var scaleFactorYUp = 2000f;
+        var scaleFactorYDown = 1000f;
 
         var magnitude = Math.sqrt((directionX * directionX + directionY * directionY).toDouble())
         //resets the velocity for smoother bounce
