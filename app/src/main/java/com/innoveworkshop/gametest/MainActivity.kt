@@ -1,13 +1,18 @@
 package com.innoveworkshop.gametest
 
 import android.annotation.SuppressLint
+import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.Paint
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
+import android.view.Surface
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
+import androidx.annotation.NonNull
 import androidx.appcompat.app.AppCompatActivity
 import com.innoveworkshop.gametest.assets.DroppingCircle
 import com.innoveworkshop.gametest.assets.Trajectory
@@ -15,6 +20,8 @@ import com.innoveworkshop.gametest.engine.Circle
 import com.innoveworkshop.gametest.engine.GameObject
 import com.innoveworkshop.gametest.engine.GameSurface
 import com.innoveworkshop.gametest.assets.PegRandomSpawns
+import com.innoveworkshop.gametest.engine.Rectangle
+import com.innoveworkshop.gametest.engine.Vector
 
 class MainActivity : AppCompatActivity() {
     protected var gameSurface: GameSurface? = null
@@ -89,23 +96,43 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+
+
+
+
     inner class Game : GameObject() {
         private var circleList = mutableListOf<Circle>()
         var circle: Circle? = null
         var ball: DroppingCircle? = null
         private var scoreInt = 0;
         //var scoreText: String = "";
-        private var valueBlue: Int = 100;
-        private var valueRed: Int = 300;
+        private var valueBlue: Int = 10;
+        private var valueRed: Int = 100;
 
         private var startX = 0;
         private var startY = 0
 
         //var ballCounter = 1;
 
+//        fun onDraw(canvas :Canvas) {
+//            super.onDraw(canvas);
+//
+//            var paint: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
+//
+//            paint.color = Color.GREEN
+//            paint.style = Paint.Style.FILL
+//
+//            //paint.setColor(Color.parseColor("#f58442"));
+//            paint.setStrokeWidth(15F);
+//            canvas.drawLine(0f, 0f, gameSurface!!.width.toFloat(),
+//                gameSurface!!.height.toFloat(), paint);
+//        }
+
         @SuppressLint("SetTextI18n")
         override fun onStart(surface: GameSurface?) {
             super.onStart(surface)
+
+            //onDraw(canvas: Canvas?)
 
             startX = surface!!.width / 2;
             startY = surface!!.width / 8;
@@ -128,36 +155,12 @@ class MainActivity : AppCompatActivity() {
                 10f,
                 Color.rgb(100, 140, 0),
                 0,
-                2
+                5
             )
             surface.addGameObject(ball!!)
 
             //boundries for height
             var radius = 50f;
-
-//            for (i in 1..20) {
-//                val randomX = (Math.random() * (surface.width - radius)).toFloat() // Random X within a range
-//                val randomY = (Math.random() * (surface.height - radius)).toFloat()
-//
-//                // Create circle object based on the condition
-//                val circle = if (i % 5 == 0) {
-//                    Circle(randomX, randomY, radius, Color.RED, valueRed)
-//                } else {
-//                    Circle(randomX, randomY, radius, Color.BLUE, valueBlue)
-//                }
-////                circle = Circle(
-////                (surface.width / 2).toFloat(),
-////                (surface.height / 2).toFloat(),
-////                40f,
-////                Color.RED,
-////                valueRed
-////            )
-//
-//                // Add circle to the list and surface
-//                circleList.add(circle!!)
-//                surface.addGameObject(circle!!)
-//            }
-//
             var pegController = PegRandomSpawns(
                 radius = radius,
                 colorRed = Color.RED,
@@ -180,18 +183,38 @@ class MainActivity : AppCompatActivity() {
             }
 
 
+            surface.addGameObject(Rectangle(
+                position = Vector(0f, surface.height.toFloat() / 2),
+                width = 20f,
+                height = surface.height.toFloat(),
+                color = Color.MAGENTA
+            ))
+            surface.addGameObject(Rectangle(
+                position = Vector(surface.width.toFloat(), surface.height.toFloat() / 2),
+                width = 20f,
+                height = surface.height.toFloat(),
+                color = Color.MAGENTA
+            ))
+            surface.addGameObject(Rectangle(
+                position = Vector(surface.width.toFloat() / 2, 0f),
+                width = surface.width.toFloat(),
+                height = 20f,
+                color = Color.MAGENTA
+            ))
+            surface.addGameObject(Rectangle(
+                position = Vector(surface.width.toFloat() / 2, surface.height.toFloat()),
+                width = surface.width.toFloat(),
+                height = 20f,
+                color = Color.MAGENTA
+            ))
+
+            Log.e("diocane", surface.width.toString())
+
         }
 
         @SuppressLint("SetTextI18n")
         override fun onFixedUpdate() {
             super.onFixedUpdate()
-
-//            if (!circle!!.isFloored && !circle!!.hitRightWall() && !circle!!.isDestroyed) {
-//                //moves the circle towards bottom left as long as it doesn't touch the ground and the right wall
-//                //circle!!.setPosition(circle!!.position.x + 1, circle!!.position.y + 1)
-//            } else {
-//                circle!!.destroy()
-//            }
 
             //custom Collision for pegs
             val toRemove = mutableListOf<Circle>() // Temporary list to store circles to be removed
@@ -228,17 +251,12 @@ class MainActivity : AppCompatActivity() {
 
             //amogus
             if (ball!!.isFloored) {
-
                 ball!!.resetPosition()
-
                 val mainHandler = Handler(Looper.getMainLooper())
                 mainHandler.post {
                     // This will update the UI safely on the main thread
                     ballCounterTextView?.text = "Ball Counter: ${ball!!.counter}"
                 }
-
-
-                //Log.e("ball counter", ball!!.counter.toString())
             }
         }
 
