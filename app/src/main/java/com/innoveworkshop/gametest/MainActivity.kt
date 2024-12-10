@@ -152,7 +152,6 @@ class MainActivity : AppCompatActivity() {
                 (startY).toFloat(),
                 40f,
                 10f,
-                10f,
                 Color.rgb(100, 140, 0),
                 0,
                 5
@@ -182,7 +181,11 @@ class MainActivity : AppCompatActivity() {
                 debugTextView?.text = "Angle: ${trajectory!!.angle}"
             }
 
+            drawBoundries(surface)
 
+        }
+
+        private fun drawBoundries(surface: GameSurface) {
             surface.addGameObject(Rectangle(
                 position = Vector(0f, surface.height.toFloat() / 2),
                 width = 20f,
@@ -207,9 +210,6 @@ class MainActivity : AppCompatActivity() {
                 height = 20f,
                 color = Color.MAGENTA
             ))
-
-            Log.e("diocane", surface.width.toString())
-
         }
 
         @SuppressLint("SetTextI18n")

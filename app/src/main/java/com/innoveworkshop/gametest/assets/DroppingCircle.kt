@@ -10,14 +10,14 @@ class DroppingCircle(
     y: Float,
     radius: Float,
     dropRateY: Float,
-    horizontalDamping: Float,
+
     color: Int,
     value: Int,
     counter: Int
 ) : Circle(x, y, radius, color, value) {
     private var gravity = 4f;
-    public var dropRateY: Float = 10f
-    var horizontalDamping: Float = 0f;
+    var dropRateY: Float = 10f
+
 
     var velocity: Vector = Vector(0f, dropRateY)
     private var velocityDeprecation = 10f;
@@ -41,37 +41,14 @@ class DroppingCircle(
         this.startX = x
         this.startY = y
 
-        //velocity.x = 8f;
-        //velocity.y = 8f;
-
-        // declare vector to be applied each frame, (dumpingX, gravity)
-        // apply it each frame as long as the horizontal velocity is higher than 0.
-
-        // create the vector of velocity with x,y and some force multiplier.
-        // like the gravity, its applyed to the ball's position and each single time it's reduced to 0.
-        // if a value it's 0, don't apply that one.
-
-
-
     }
 
     override fun onFixedUpdate() {
         super.onFixedUpdate()
 
-
-        //moves it towards the floor
-        //if (!isFloored) position.y += dropRateY
-
-        //if (!isFloored) position.x -= dropRateY
         if(counter > 0 && isLaunched){
             velocityCalculator()
         }
-
-        //is called only once so doesnt reduce the speed as intended
-        //if(Math.abs(velocity.x) >= 0 || Math.abs(velocity.y) >= -10f)
-
-
-
     }
 
     @SuppressLint("DefaultLocale")
@@ -124,13 +101,6 @@ class DroppingCircle(
         // Now that the velocity is calculated and clamped, update the position
         position.x += velocity.x
         position.y += velocity.y
-
-        // Log the current velocities
-//        val spingiOstia = String.format(
-//            "{\"Applied Velocity X\":%f, \"Applied Velocity Y\":%f}",
-//            velocity.x, velocity.y
-//        )
-//        Log.d("Velocity Current", spingiOstia)
     }
 
     // Clamp function to limit the velocity between a minimum and maximum value
@@ -166,31 +136,16 @@ class DroppingCircle(
 
             if(magnitude <= radiusSum)
             {
-//                val spingiOstia = String.format(
-//                    "{\"DroppingCircle x\":%f, \"DroppingCircle Y\":%f, \"DroppingCircle R\":%f, \"Circle X\":%f, \"Circle Y\":%f, \"Circle R\":%f}",
-//                    position.x, position.y, radius,
-//                    circleCollided.position.x, circleCollided.position.y, circleCollided.radius
-//                )
-//
-//                Log.v("Json", spingiOstia);
-
-                //dropRateY = 0f;
-
                 BounceCalculator(directionX, directionY, circleCollided.position.y)
                 return true;
             }else
                 return false;
             }
         return false;
-        //return (position.x + width / 2) >= gameSurface!!.width
     }
 
     @SuppressLint("DefaultLocale")
     private fun BounceCalculator(directionX :Float, directionY: Float, collisionRelativePos: Float){
-
-//        Log.v("Alleged direction from static ball to dropping ball ",
-//            "X: $directionX Y:$directionY"
-//        )
         var scaleFactorX = 60f;
         var scaleFactorYUp = 2000f;
         var scaleFactorYDown = 1000f;
@@ -209,16 +164,6 @@ class DroppingCircle(
         }else{
             velocity.y += directionY/magnitude.toFloat() * scaleFactorYDown;
         }
-
-
-        val spingiOstia = String.format(
-            "{\"Applied Velocity X\":%f, \"Applied Velocity Y\":%f}",
-            velocity.x, velocity.y
-        )
-        Log.d("Velocity Applied", spingiOstia)
-
-        //Log.v("suca X",velocity.x.toString())
-        //Log.v("suca Y",velocity.y.toString())
     }
 
     fun mirrorXVelocity()
@@ -251,11 +196,6 @@ class DroppingCircle(
 
         isLaunched = true;
 
-        // should receive the value rotated of the trajecotry and
-        // apply it via teh bounceCalculator
-
-//        this.dropRateY = 10f;
-//        this.gravity = 10f;
     }
 
 }
