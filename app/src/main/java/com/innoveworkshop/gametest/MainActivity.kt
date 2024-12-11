@@ -1,18 +1,15 @@
 package com.innoveworkshop.gametest
 
 import android.annotation.SuppressLint
-import android.graphics.Canvas
 import android.graphics.Color
-import android.graphics.Paint
+import android.graphics.PointF
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import android.view.Surface
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
-import androidx.annotation.NonNull
 import androidx.appcompat.app.AppCompatActivity
 import com.innoveworkshop.gametest.assets.DroppingCircle
 import com.innoveworkshop.gametest.assets.Trajectory
@@ -122,9 +119,7 @@ class MainActivity : AppCompatActivity() {
         //var ballCounter = 1;
 
 
-        var i: Int = 0
-
-//        fun onDraw(canvas :Canvas) {
+        //        fun onDraw(canvas :Canvas) {
 //            super.onDraw(canvas);
 //
 //            var paint: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
@@ -255,22 +250,7 @@ class MainActivity : AppCompatActivity() {
         override fun onFixedUpdate() {
             super.onFixedUpdate()
 
-            displayRotateCircleTrajectory()
-
-            if(ball!!.isLaunched){
-                for(circleTraj in circleTrajList){
-                    circleTraj.position.x = -100f
-                    circleTraj.position.y = -100f
-                }
-            }else if(!ball!!.isLaunched){
-                repeat(circleTrajList.size) { i ->
-                    // Update the position of each Circle in circleTrajList
-                    val circleTraj = circleTrajList[i]
-                    circleTraj.position.x = circleTrajListPos[i].x
-                    circleTraj.position.y = circleTrajListPos[i].y
-                }
-            }
-
+            //displayRotateCircleTrajectory()
 
             //custom Collision for pegs
             val toRemove = mutableListOf<Circle>() // Temporary list to store circles to be removed
@@ -305,20 +285,35 @@ class MainActivity : AppCompatActivity() {
             if (ball!!.hitCeiling())
                 ball!!.mirrorYVelocity()
 
-            //amogus
+// Save the positions of the circles
+            if (ball!!.isLaunched) {
+//                circleTrajList.forEachIndexed { i, circleTraj ->
+//                    circleTrajListPos[i].set(circleTraj.position.x, circleTraj.position.y)
+//                    circleTraj.position.x = -100f
+//                    circleTraj.position.y = -100f
+//                }
+            }
+
+// Restore the positions of the circles
             if (ball!!.isFloored) {
                 ball!!.resetPosition()
                 val mainHandler = Handler(Looper.getMainLooper())
                 mainHandler.post {
-                    // This will update the UI safely on the main thread
                     ballCounterTextView?.text = "Ball Counter: ${ball!!.counter}"
                 }
+
+//                circleTrajList.forEachIndexed { i, circleTraj ->
+//                    circleTraj.position.x = circleTrajListPos[i].x
+//                    circleTraj.position.y = circleTrajListPos[i].y
+//                }
             }
+
         }
 
         private fun displayRotateCircleTrajectory() {
             if(ball!!.isLaunched){
                 for(circleTraj in circleTrajList){
+
                     circleTraj.position.x = -100f
                     circleTraj.position.y = -100f
                 }

@@ -31,22 +31,18 @@ class Trajectory(
 
     fun variateAngle(delta: Float, circles: List<Circle>, startX: Int, startY: Int) {
         // Update the angle
-        angle += delta
+        //angle += delta
 
         val angelCheck = angle + delta
 
         // Limit the angle to be within -90 and 90 degrees
-        if (angelCheck > 90f) {
-            angle = 90f
-        } else if (angelCheck < -90f) {
-            angle = -90f
+        if (angelCheck >= -90f && angelCheck <= 90f) {
+            angle = angelCheck
+            rotateObject(circles, startX, startY, -delta)
         }
 
-        // Rotate each circle in the list
-        rotateObject(circles, startX, startY)
-
     }
-    //
+    
     fun plotting() : Pair<Float, Float> {
         // Set the radius to 1 (unit distance)
         val radius = 1f
@@ -91,17 +87,22 @@ class Trajectory(
     }
 
 
-    fun rotateObject(circles: List<Circle>, startX: Int, startY: Int) {
-        val angleInRadians = Math.toRadians(angle.toDouble())
+    fun rotateObject(circles: List<Circle>, startX: Int, startY: Int, angleDiff: Float) {
+        val angleInRadians = Math.toRadians(angleDiff.toDouble())
+        //val angleInRadiansZeroed = Math.toRadians(0.toDouble())
 
         // Loop through each circle with index, print initial position, and apply rotation
         circles.forEachIndexed { index, circle ->
             // Print the position of the circle before rotation
-            println("Circle #$index - Before rotation: x = ${circle.position.x}, y = ${circle.position.y}")
+            //println("Circle #$index - Before rotation: x = ${circle.position.x}, y = ${circle.position.y}")
+
+
 
             // Translate the object to origin (relative to the rotation center)
             val translatedX = circle.position.x - startX
             val translatedY = circle.position.y - startY
+
+
 
             // Apply the rotation matrix
             val newX = translatedX * cos(angleInRadians) - translatedY * sin(angleInRadians) + startX
@@ -112,7 +113,7 @@ class Trajectory(
             circle.position.y = newY.toFloat()
 
             // Print the position of the circle after rotation
-            println("Circle #$index - After rotation: x = ${circle.position.x}, y = ${circle.position.y}")
+            //println("Circle #$index - After rotation: x = ${circle.position.x}, y = ${circle.position.y}")
         }
     }
 
