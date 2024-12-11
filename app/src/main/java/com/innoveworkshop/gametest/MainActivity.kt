@@ -38,6 +38,9 @@ class MainActivity : AppCompatActivity() {
     protected var game: Game? = null
 
     protected var trajectory: Trajectory? = null
+    private var circleTrajList = mutableListOf<Circle>()
+    private var startX = 0;
+    private var startY = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,21 +78,21 @@ class MainActivity : AppCompatActivity() {
 
 
         leftButton = findViewById<View>(R.id.big_decrease) as Button
-        leftButton!!.setOnClickListener { TrajectoryUpdate(-10f) }
+        leftButton!!.setOnClickListener { TrajectoryUpdate(-10f, circleTrajList, startX, startY) }
 
         rightButton = findViewById<View>(R.id.big_increase) as Button
-        rightButton!!.setOnClickListener { TrajectoryUpdate(+10f) }
+        rightButton!!.setOnClickListener { TrajectoryUpdate(+10f, circleTrajList, startX, startY) }
 
         smallDecrease = findViewById<View>(R.id.small_decrease) as Button
-        smallDecrease!!.setOnClickListener { TrajectoryUpdate(-1f) }
+        smallDecrease!!.setOnClickListener { TrajectoryUpdate(-1f, circleTrajList, startX, startY) }
 
         smallIncrease = findViewById<View>(R.id.small_increase) as Button
-        smallIncrease!!.setOnClickListener { TrajectoryUpdate(+1f) }
+        smallIncrease!!.setOnClickListener { TrajectoryUpdate(+1f, circleTrajList, startX, startY) }
     }
 
     //change this into a function into the trajectory
-    private fun TrajectoryUpdate(delta: Float) {
-        trajectory?.variateAngle(delta)
+    private fun TrajectoryUpdate(delta: Float, circles: List<Circle>, startX: Int, startY: Int) {
+        trajectory?.variateAngle(delta, circles, startX, startY)
 
         var angelDisplayValue = trajectory!!.angle
 
@@ -113,9 +116,8 @@ class MainActivity : AppCompatActivity() {
         private var valueBlue: Int = 10;
         private var valueRed: Int = 100;
 
-        private var startX = 0;
-        private var startY = 0
-        private var circleTrajList = mutableListOf<Circle>()
+
+
         private var circleTrajListPos = mutableListOf<Vector>()
         //var ballCounter = 1;
 
@@ -145,7 +147,7 @@ class MainActivity : AppCompatActivity() {
             startX = surface!!.width / 2;
             startY = surface!!.width / 8;
 
-            //Log.e("inizio", startX.toString() + " " + startY.toString())
+            Log.e("inizio", startX.toString() + " " + startY.toString())
 
             //trajecotry
             trajectory = Trajectory(
@@ -253,6 +255,8 @@ class MainActivity : AppCompatActivity() {
         override fun onFixedUpdate() {
             super.onFixedUpdate()
 
+            displayRotateCircleTrajectory()
+
             if(ball!!.isLaunched){
                 for(circleTraj in circleTrajList){
                     circleTraj.position.x = -100f
@@ -308,6 +312,22 @@ class MainActivity : AppCompatActivity() {
                 mainHandler.post {
                     // This will update the UI safely on the main thread
                     ballCounterTextView?.text = "Ball Counter: ${ball!!.counter}"
+                }
+            }
+        }
+
+        private fun displayRotateCircleTrajectory() {
+            if(ball!!.isLaunched){
+                for(circleTraj in circleTrajList){
+                    circleTraj.position.x = -100f
+                    circleTraj.position.y = -100f
+                }
+            } else if(!ball!!.isLaunched){
+                repeat(circleTrajList.size) { i ->
+                    // Update the position of each Circle in circleTrajList
+                    val circleTraj = circleTrajList[i]
+                    circleTraj.position.x = circleTrajListPos[i].x
+                    circleTraj.position.y = circleTrajListPos[i].y
                 }
             }
         }

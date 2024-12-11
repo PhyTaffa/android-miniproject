@@ -29,17 +29,21 @@ class Trajectory(
         //trajectoryPlotting(angle)
     }
 
-    fun variateAngle(delta: Float){
-
+    fun variateAngle(delta: Float, circles: List<Circle>, startX: Int, startY: Int) {
+        // Update the angle
         angle += delta
 
-        var angelCheck = angle + delta;
+        val angelCheck = angle + delta
 
-        if ((angelCheck) > 90f) {
+        // Limit the angle to be within -90 and 90 degrees
+        if (angelCheck > 90f) {
             angle = 90f
         } else if (angelCheck < -90f) {
             angle = -90f
         }
+
+        // Rotate each circle in the list
+        rotateObject(circles, startX, startY)
 
     }
     //
@@ -87,22 +91,31 @@ class Trajectory(
     }
 
 
-    fun rotateObject(circle: Circle, startX: Float, startY: Float): Pair<Double, Double> {
-        var adjustedAngle = this.angle
-        // Convert the angle to radians
-        val angleInRadians = Math.toRadians(adjustedAngle.toDouble())
+    fun rotateObject(circles: List<Circle>, startX: Int, startY: Int) {
+        val angleInRadians = Math.toRadians(angle.toDouble())
 
-        // Translate the object to origin
-        val translatedX = circle.position.x - startX
-        val translatedY = circle.position.y - startY
+        // Loop through each circle with index, print initial position, and apply rotation
+        circles.forEachIndexed { index, circle ->
+            // Print the position of the circle before rotation
+            println("Circle #$index - Before rotation: x = ${circle.position.x}, y = ${circle.position.y}")
 
-        // Apply the rotation matrix
-        val newX = translatedX * cos(angleInRadians) - translatedY * sin(angleInRadians) + startX
-        val newY = translatedX * sin(angleInRadians) + translatedY * cos(angleInRadians) + startY
+            // Translate the object to origin (relative to the rotation center)
+            val translatedX = circle.position.x - startX
+            val translatedY = circle.position.y - startY
 
-        // Return the new coordinates
-        return Pair(newX, newY)
+            // Apply the rotation matrix
+            val newX = translatedX * cos(angleInRadians) - translatedY * sin(angleInRadians) + startX
+            val newY = translatedX * sin(angleInRadians) + translatedY * cos(angleInRadians) + startY
+
+            // Update the circle's position directly
+            circle.position.x = newX.toFloat()
+            circle.position.y = newY.toFloat()
+
+            // Print the position of the circle after rotation
+            println("Circle #$index - After rotation: x = ${circle.position.x}, y = ${circle.position.y}")
+        }
     }
+
 
 
 }
