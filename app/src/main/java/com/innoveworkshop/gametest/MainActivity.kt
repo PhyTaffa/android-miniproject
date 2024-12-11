@@ -11,6 +11,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.graphics.alpha
 import com.innoveworkshop.gametest.assets.DroppingCircle
 import com.innoveworkshop.gametest.assets.Trajectory
 import com.innoveworkshop.gametest.engine.Circle
@@ -106,32 +107,12 @@ class MainActivity : AppCompatActivity() {
 
     inner class Game : GameObject() {
         private var circleList = mutableListOf<Circle>()
-        var circle: Circle? = null
         var ball: DroppingCircle? = null
         private var scoreInt = 0;
-        //var scoreText: String = "";
-        private var valueBlue: Int = 10;
-        private var valueRed: Int = 100;
-
-
-
+        private var valueBlue: Int = 100;
+        private var valueRed: Int = 300;
         private var circleTrajListPos = mutableListOf<Vector>()
-        //var ballCounter = 1;
 
-
-        //        fun onDraw(canvas :Canvas) {
-//            super.onDraw(canvas);
-//
-//            var paint: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
-//
-//            paint.color = Color.GREEN
-//            paint.style = Paint.Style.FILL
-//
-//            //paint.setColor(Color.parseColor("#f58442"));
-//            paint.setStrokeWidth(15F);
-//            canvas.drawLine(0f, 0f, gameSurface!!.width.toFloat(),
-//                gameSurface!!.height.toFloat(), paint);
-//        }
 
         @SuppressLint("SetTextI18n")
         override fun onStart(surface: GameSurface?) {
@@ -163,7 +144,8 @@ class MainActivity : AppCompatActivity() {
             )
             surface.addGameObject(ball!!)
 
-            //boundries for height
+
+
             var radius = 50f;
             var pegController = PegRandomSpawns(
                 radius = radius,
@@ -178,6 +160,8 @@ class MainActivity : AppCompatActivity() {
 
             circleList = pegController.generatePegs(20).toMutableList();
 
+
+
             val mainHandler = Handler(Looper.getMainLooper())
             mainHandler.post {
                 // This will update the UI safely on the main thread
@@ -186,6 +170,7 @@ class MainActivity : AppCompatActivity() {
                 debugTextView?.text = "Angle: ${trajectory!!.angle}"
             }
 
+            //just visual effects
             drawBoundries(surface)
             simulateTrajecotry(surface)
 
@@ -234,7 +219,7 @@ class MainActivity : AppCompatActivity() {
                     vectorPos.x,
                     vectorPos.y,
                     drawRadius,
-                    Color.MAGENTA,
+                    color = Color.argb(70, 255, 255,255,),
                     0
                 )
                 circleTrajList.add(circleTraj)
@@ -287,10 +272,16 @@ class MainActivity : AppCompatActivity() {
 
 // Save the positions of the circles
             if (ball!!.isLaunched) {
-//                circleTrajList.forEachIndexed { i, circleTraj ->
-//                    circleTrajListPos[i].set(circleTraj.position.x, circleTraj.position.y)
+                for(circleTraj in circleTrajList){
+                    circleTraj.paint.color = Color.argb(0, 255, 255,255,)
 //                    circleTraj.position.x = -100f
 //                    circleTraj.position.y = -100f
+                }
+//                circleTrajList.forEachIndexed { i, circleTraj ->
+//                    circleTraj.color = Color.argb(0, 255, 255,255,)
+////                    circleTrajListPos[i].set(circleTraj.position.x, circleTraj.position.y)
+////                    circleTraj.position.x = -100f
+////                    circleTraj.position.y = -100f
 //                }
             }
 
@@ -301,7 +292,11 @@ class MainActivity : AppCompatActivity() {
                 mainHandler.post {
                     ballCounterTextView?.text = "Ball Counter: ${ball!!.counter}"
                 }
-
+                for(circleTraj in circleTrajList){
+                    circleTraj.paint.color = Color.argb(100, 255, 255,255,)
+//                    circleTraj.position.x = -100f
+//                    circleTraj.position.y = -100f
+                }
 //                circleTrajList.forEachIndexed { i, circleTraj ->
 //                    circleTraj.position.x = circleTrajListPos[i].x
 //                    circleTraj.position.y = circleTrajListPos[i].y

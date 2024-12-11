@@ -42,7 +42,7 @@ class Trajectory(
         }
 
     }
-    
+
     fun plotting() : Pair<Float, Float> {
         // Set the radius to 1 (unit distance)
         val radius = 1f
