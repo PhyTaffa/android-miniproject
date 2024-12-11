@@ -198,4 +198,22 @@ class DroppingCircle(
 
     }
 
+    fun findTrajectory(touch: Vector){
+        var distanceXsquared :Double;
+        distanceXsquared = Math.pow((touch.x - this.position.x).toDouble(), 2.toDouble());
+        var directionX: Float
+        directionX = (this.position.x - touch.x);
+
+        var distanceYsquared : Double;
+        distanceYsquared = Math.pow((touch.y - this.position.y).toDouble() , 2.toDouble())
+        var directionY: Float
+        directionY = (this.position.y - touch.y);
+
+        var magnitude :Double;
+        magnitude = Math.sqrt( distanceXsquared + distanceYsquared )
+
+        BounceCalculator(directionX, directionY, touch.y)
+
+    }
+
 }

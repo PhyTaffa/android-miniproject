@@ -8,12 +8,14 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.view.MotionEvent
 import android.view.Surface
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import androidx.annotation.NonNull
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.innoveworkshop.gametest.assets.DroppingCircle
 import com.innoveworkshop.gametest.assets.Trajectory
 import com.innoveworkshop.gametest.engine.Circle
@@ -25,20 +27,17 @@ import com.innoveworkshop.gametest.engine.Vector
 
 class MainActivity : AppCompatActivity() {
     protected var gameSurface: GameSurface? = null
-    protected var upButton: Button? = null
-    protected var downButton: Button? = null
-    protected var leftButton: Button? = null
-    protected var rightButton: Button? = null
-    protected var smallDecrease: Button? = null
-    protected var smallIncrease: Button? = null
     protected var scoreTextView: TextView? = null
     protected var ballCounterTextView: TextView? = null
     protected var debugTextView: TextView? = null
+    protected var controlsLayout: ConstraintLayout? = null
 
     protected var game: Game? = null
 
     protected var trajectory: Trajectory? = null
+    var ball: DroppingCircle? = null
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -47,10 +46,56 @@ class MainActivity : AppCompatActivity() {
         game = Game()
         gameSurface!!.setRootGameObject(game)
 
-
-
-        setupControls()
         setUpTexts()
+
+        controlsLayout = findViewById<View>(R.id.controls_layout) as ConstraintLayout
+        controlsLayout!!.setOnTouchListener { _, event ->
+            when (event?.action) {
+                //Prints position while pressing the screen
+                MotionEvent.ACTION_MOVE -> {
+                    Log.i("aaaa", "${event.x} ${event.y}")
+                    //save the position and calculate the vector connecting it to the ball.
+                    var initialTouch = Vector(event.x, event.y)
+
+                    trajectory?.variateAngle(trajectory!!.findAngleTouch(initialTouch, ball!!))
+                    //pass the that thing to the trjectory thing.
+                    //ball?.findTrajectory(initialTouch)
+
+                }
+                //Prints position when first pressed screen (and more)
+                MotionEvent.ACTION_DOWN -> {
+                    var initialTouch = Vector(event.x, event.y)
+
+                    trajectory?.variateAngle(trajectory!!.findAngleTouch(initialTouch, ball!!))
+
+                    Log.i("ACTION DOWN", "Touch started at: (${event.x}, ${event.y})")
+                    Log.i("ANGLE", trajectory!!.angle.toString())
+                }
+                // i love man
+                MotionEvent.ACTION_UP -> {
+                    var initialTouch = Vector(event.x, event.y)
+                    Log.i("ACTION DOWN", "Touch started at: (${event.x}, ${event.y})")
+
+                    trajectory?.let { ball?.launchBall(it) }
+//                    if (initialTouch != null && !hasLaunch) {
+//                        val releaseTouch = Vector(event.x, event.y)
+//                        val forceVector = Vector(
+//                            releaseTouch.x - initialTouch!!.x,
+//                            releaseTouch.y - initialTouch!!.y
+//                        )
+//                        // Reverse the force vector
+//                        val reversedForce = forceVector.reverse()
+//                        Log.i("VECTOR", "Applied force: (${reversedForce.x}, ${reversedForce.y})")
+//
+//                        // Apply the reversed force to the circle
+//                        bowlingBall?.applyForce(reversedForce)
+//                        hasLaunch = true
+//                    }
+                }
+            }
+            true
+        }
+
     }
 
     private fun setUpTexts()
@@ -62,26 +107,6 @@ class MainActivity : AppCompatActivity() {
         debugTextView = findViewById<View>(R.id.Debug) as TextView
     }
 
-    private fun setupControls() {
-        upButton = findViewById<View>(R.id.up_button) as Button
-        upButton!!.setOnClickListener { game!!.ball!!.counter += 1; trajectory?.plotting() }
-
-        downButton = findViewById<View>(R.id.down_button) as Button
-        downButton!!.setOnClickListener { game!!.ball!!.launchBall(trajectory!!) }
-
-
-        leftButton = findViewById<View>(R.id.big_decrease) as Button
-        leftButton!!.setOnClickListener { TrajectoryUpdate(-10f) }
-
-        rightButton = findViewById<View>(R.id.big_increase) as Button
-        rightButton!!.setOnClickListener { TrajectoryUpdate(+10f) }
-
-        smallDecrease = findViewById<View>(R.id.small_decrease) as Button
-        smallDecrease!!.setOnClickListener { TrajectoryUpdate(-1f) }
-
-        smallIncrease = findViewById<View>(R.id.small_increase) as Button
-        smallIncrease!!.setOnClickListener { TrajectoryUpdate(+1f) }
-    }
 
     //change this into a function into the trajectory
     private fun TrajectoryUpdate(delta: Float) {
@@ -102,8 +127,7 @@ class MainActivity : AppCompatActivity() {
 
     inner class Game : GameObject() {
         private var circleList = mutableListOf<Circle>()
-        var circle: Circle? = null
-        var ball: DroppingCircle? = null
+
         private var scoreInt = 0;
         //var scoreText: String = "";
         private var valueBlue: Int = 10;
@@ -111,6 +135,8 @@ class MainActivity : AppCompatActivity() {
 
         private var startX = 0;
         private var startY = 0
+
+        private var middle: Vector? = null
 
         //var ballCounter = 1;
 
@@ -132,10 +158,14 @@ class MainActivity : AppCompatActivity() {
         override fun onStart(surface: GameSurface?) {
             super.onStart(surface)
 
+            middle = Vector(
+                (surface!!.width / 2).toFloat(), (surface!!.width / 2).toFloat()
+            )
+
             //onDraw(canvas: Canvas?)
 
             startX = surface!!.width / 2;
-            startY = surface!!.width / 8;
+            startY = surface!!.width / 2;
 
             //Log.e("inizio", startX.toString() + " " + startY.toString())
 

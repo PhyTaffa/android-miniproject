@@ -2,6 +2,7 @@ package com.innoveworkshop.gametest.assets
 
 import android.util.Log
 import com.innoveworkshop.gametest.engine.GameObject
+import com.innoveworkshop.gametest.engine.Vector
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.sqrt
@@ -23,22 +24,22 @@ class Trajectory(
 
     override fun onFixedUpdate() {
         super.onFixedUpdate()
-
-        Log.d("angle", angle.toString())
-        //trajectoryPlotting(angle)
+//
+//        Log.d("angle", angle.toString())
+//        //trajectoryPlotting(angle)
     }
 
     fun variateAngle(delta: Float){
 
         angle += delta
 
-        var angelCheck = angle + delta;
-
-        if ((angelCheck) > 90f) {
-            angle = 90f
-        } else if (angelCheck < -90f) {
-            angle = -90f
-        }
+//        var angelCheck = angle + delta;
+//
+//        if ((angelCheck) > 90f) {
+//            angle = 90f
+//        } else if (angelCheck < -90f) {
+//            angle = -90f
+//        }
 
     }
     //
@@ -83,6 +84,30 @@ class Trajectory(
         val normalizedY = y / magnitude
 
         return Pair(normalizedX.toFloat(), normalizedY.toFloat())
+    }
+
+    fun findAngleTouch(touch: Vector, ball: DroppingCircle): Float {
+
+
+        // Calculate the relative vector (difference between touch and ball position)
+        val deltaX = touch.x - ball.position.x
+        val deltaY = touch.y - ball.position.y
+
+        Log.d("AngleCalculation", "deltaX: $deltaX, deltaY: $deltaY")
+        val angleDegrees = Math.toDegrees(angle.toDouble()).toFloat()
+
+        // Log the angle in degrees
+        Log.d("AngleCalculation", "Angle in degrees: $angleDegrees")
+
+        // Use atan2 to calculate the angle in radians
+        // atan2 returns the angle in radians from the positive x-axis
+        val angle = Math.atan2(deltaY.toDouble(), deltaX.toDouble()).toFloat()
+
+        this.angle = angle
+        Log.d("AngleCalculation 1", "Angle in degrees: $angleDegrees")
+
+
+        return angle // The angle is in radians
     }
 
 
