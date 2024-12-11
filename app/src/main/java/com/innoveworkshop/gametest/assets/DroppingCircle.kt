@@ -30,7 +30,7 @@ class DroppingCircle(
 
 
 
-    private var isLaunched = false;
+    public var isLaunched = false;
 
     init {
 

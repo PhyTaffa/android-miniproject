@@ -1,6 +1,7 @@
 package com.innoveworkshop.gametest.assets
 
 import android.util.Log
+import com.innoveworkshop.gametest.engine.Circle
 import com.innoveworkshop.gametest.engine.GameObject
 import kotlin.math.cos
 import kotlin.math.sin
@@ -83,6 +84,24 @@ class Trajectory(
         val normalizedY = y / magnitude
 
         return Pair(normalizedX.toFloat(), normalizedY.toFloat())
+    }
+
+
+    fun rotateObject(circle: Circle, startX: Float, startY: Float): Pair<Double, Double> {
+        var adjustedAngle = this.angle
+        // Convert the angle to radians
+        val angleInRadians = Math.toRadians(adjustedAngle.toDouble())
+
+        // Translate the object to origin
+        val translatedX = circle.position.x - startX
+        val translatedY = circle.position.y - startY
+
+        // Apply the rotation matrix
+        val newX = translatedX * cos(angleInRadians) - translatedY * sin(angleInRadians) + startX
+        val newY = translatedX * sin(angleInRadians) + translatedY * cos(angleInRadians) + startY
+
+        // Return the new coordinates
+        return Pair(newX, newY)
     }
 
 

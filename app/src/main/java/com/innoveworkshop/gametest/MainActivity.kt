@@ -67,7 +67,11 @@ class MainActivity : AppCompatActivity() {
         upButton!!.setOnClickListener { game!!.ball!!.counter += 1; trajectory?.plotting() }
 
         downButton = findViewById<View>(R.id.down_button) as Button
-        downButton!!.setOnClickListener { game!!.ball!!.launchBall(trajectory!!) }
+        downButton!!.setOnClickListener { if(!game!!.ball!!.isLaunched){
+                                                game!!.ball!!.launchBall(trajectory!!)
+                                            }
+                                        }
+
 
 
         leftButton = findViewById<View>(R.id.big_decrease) as Button
@@ -111,8 +115,12 @@ class MainActivity : AppCompatActivity() {
 
         private var startX = 0;
         private var startY = 0
-
+        private var circleTrajList = mutableListOf<Circle>()
+        private var circleTrajListPos = mutableListOf<Vector>()
         //var ballCounter = 1;
+
+
+        var i: Int = 0
 
 //        fun onDraw(canvas :Canvas) {
 //            super.onDraw(canvas);
@@ -182,6 +190,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             drawBoundries(surface)
+            simulateTrajecotry(surface)
 
         }
 
@@ -212,9 +221,52 @@ class MainActivity : AppCompatActivity() {
             ))
         }
 
+        private fun simulateTrajecotry(surface: GameSurface) {
+            val drawRadius = 50f;
+            val drawDeltaY = (startY).toFloat() + drawRadius * 2
+
+            val numbOfCircleTraj = 4
+
+            repeat(numbOfCircleTraj){ index ->
+
+                val vectorPos = Vector(
+                    startX.toFloat(),
+                    (drawDeltaY + drawRadius * 2 * index)
+                )
+                val circleTraj: Circle = Circle(
+                    vectorPos.x,
+                    vectorPos.y,
+                    drawRadius,
+                    Color.MAGENTA,
+                    0
+                )
+                circleTrajList.add(circleTraj)
+                surface.addGameObject(circleTraj)
+
+                circleTrajListPos.add(vectorPos)
+
+            }
+        }
+
+
         @SuppressLint("SetTextI18n")
         override fun onFixedUpdate() {
             super.onFixedUpdate()
+
+            if(ball!!.isLaunched){
+                for(circleTraj in circleTrajList){
+                    circleTraj.position.x = -100f
+                    circleTraj.position.y = -100f
+                }
+            }else if(!ball!!.isLaunched){
+                repeat(circleTrajList.size) { i ->
+                    // Update the position of each Circle in circleTrajList
+                    val circleTraj = circleTrajList[i]
+                    circleTraj.position.x = circleTrajListPos[i].x
+                    circleTraj.position.y = circleTrajListPos[i].y
+                }
+            }
+
 
             //custom Collision for pegs
             val toRemove = mutableListOf<Circle>() // Temporary list to store circles to be removed
