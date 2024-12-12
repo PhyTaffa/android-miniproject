@@ -66,7 +66,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupControls() {
         upButton = findViewById<View>(R.id.up_button) as Button
-        upButton!!.setOnClickListener { game!!.ball!!.counter += 1; trajectory?.plotting() }
+        upButton!!.setOnClickListener { game!!.ball!!.counter += 1; ballUpdate()}
 
         downButton = findViewById<View>(R.id.down_button) as Button
         downButton!!.setOnClickListener { if(!game!!.ball!!.isLaunched){
@@ -93,8 +93,6 @@ class MainActivity : AppCompatActivity() {
     private fun TrajectoryUpdate(delta: Float, circles: List<Circle>, startX: Int, startY: Int) {
         trajectory?.variateAngle(delta, circles, startX, startY)
 
-        var angelDisplayValue = trajectory!!.angle
-
         val mainHandler = Handler(Looper.getMainLooper())
         mainHandler.post {
             // This will update the UI safely on the main thread
@@ -102,6 +100,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun ballUpdate(){
+        val mainHandler = Handler(Looper.getMainLooper())
+        mainHandler.post {
+            ballCounterTextView?.text = "Ball Counter: ${game!!.ball!!.counter}"
+        }
+    }
 
 
 
@@ -137,7 +141,7 @@ class MainActivity : AppCompatActivity() {
             ball = DroppingCircle(
                 (startX).toFloat(),
                 (startY).toFloat(),
-                40f,
+                25f,
                 10f,
                 Color.rgb(100, 140, 0),
                 0,
@@ -147,7 +151,7 @@ class MainActivity : AppCompatActivity() {
 
 
 
-            var radius = 50f;
+            var radius = 35f;
             var pegController = PegRandomSpawns(
                 radius = radius,
                 colorRed = Color.RED,
@@ -159,7 +163,7 @@ class MainActivity : AppCompatActivity() {
                 screenWidth = surface.width
             )
 
-            circleList = pegController.generatePegs(20).toMutableList();
+            circleList = pegController.generatePegs(30).toMutableList();
 
 
 
@@ -205,7 +209,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         private fun simulateTrajecotry(surface: GameSurface) {
-            val drawRadius = 40f;
+            val drawRadius = 30f;
             val drawDeltaY = (startY).toFloat() + drawRadius * 3
 
             val numbOfCircleTraj = 4
@@ -278,6 +282,7 @@ class MainActivity : AppCompatActivity() {
                 for(circleTraj in circleTrajList){
                     circleTraj.paint.color = Color.argb(0, 255, 255,255,)
                 }
+                ballUpdate()
             }
 
 

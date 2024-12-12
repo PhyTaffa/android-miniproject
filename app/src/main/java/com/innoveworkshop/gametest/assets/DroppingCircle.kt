@@ -46,7 +46,7 @@ class DroppingCircle(
     override fun onFixedUpdate() {
         super.onFixedUpdate()
 
-        if(counter > 0 && isLaunched){
+        if(counter >= 0 && isLaunched){
             velocityCalculator()
         }
     }
@@ -55,11 +55,11 @@ class DroppingCircle(
     fun velocityCalculator() {
 
 
-        var minClampX = -40f
-        var maxClampX = 40f
+        var minClampX = -50f
+        var maxClampX = 50f
 
-        var minClampY = -50f
-        var maxClampY = 40f
+        var minClampY = -70f
+        var maxClampY = 50f
 
 
         // X Velocity Damping (Friction/Drag)
@@ -144,27 +144,40 @@ class DroppingCircle(
         return false;
     }
 
-    @SuppressLint("DefaultLocale")
-    private fun BounceCalculator(directionX :Float, directionY: Float, collisionRelativePos: Float){
-        var scaleFactorX = 50f;
-        var scaleFactorYUp = 90f;
-        var scaleFactorYDown = 40f;
+    private fun BounceCalculator(directionX: Float, directionY: Float, currentPosY: Float, scaleFactorX: Float = 45f, scaleFactorYUp: Float = 50f, scaleFactorYDown: Float = 20f, bounceMultiplier: Float = 1.2f) {
+        // Calculate the magnitude of the direction vector
+        val magnitude = Math.sqrt((directionX * directionX + directionY * directionY).toDouble()).toFloat()
 
-        var magnitude = Math.sqrt((directionX * directionX + directionY * directionY).toDouble())
-        //resets the velocity for smoother bounce
-        velocity.x = 0f;
-        velocity.y = 0f;
+        // Avoid division by zero if magnitude is zero
+        if (magnitude == 0f) return
 
+        // Normalize direction vector
+        val normalizedDirectionX = directionX / magnitude
+        val normalizedDirectionY = directionY / magnitude
 
-        velocity.x += directionX/magnitude.toFloat() * scaleFactorX;
+        velocity.x = 0f
+        velocity.y = 0f
 
-        if(this.position.y >= collisionRelativePos)
-        {
-            velocity.y += directionY/magnitude.toFloat() * scaleFactorYUp;
-        }else{
-            velocity.y += directionY/magnitude.toFloat() * scaleFactorYDown;
+        // Apply scaling factors to direction components
+        velocity.x += normalizedDirectionX * scaleFactorX
+
+        // Adjust vertical velocity with a moderate multiplier for a controlled bounce
+        if (currentPosY >= this.position.y) { // ball comining from the top
+            // Moderate upward bounce with a toned-down multiplier
+            velocity.y += normalizedDirectionY * scaleFactorYUp * bounceMultiplier
+        } else {
+            // Controlled downward bounce
+            velocity.y += normalizedDirectionY * scaleFactorYDown * bounceMultiplier
         }
+
+        // Optional: Damping effect to slow down the bounce over time
+        //if (Math.abs(velocity.x) < 0.5f) velocity.x = 0f // Slow down horizontally
+        //if (Math.abs(velocity.y) < 0.5f) velocity.y = 0f // Slow down vertically
     }
+
+
+
+
 
     fun mirrorXVelocity()
     {
@@ -183,7 +196,7 @@ class DroppingCircle(
         this.velocity.x = 0f
         this.velocity.y = 0f
 
-        this.counter--
+
 
         isLaunched = false
     }
@@ -193,6 +206,11 @@ class DroppingCircle(
         var (rotationX, rotationY) = trajectoryRef.plotting()
 
         BounceCalculator(rotationX, rotationY, this.position.y)
+
+        if(counter >= 0)
+            this.counter--
+        else
+            this.counter = 0
 
         isLaunched = true;
 

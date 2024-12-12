@@ -8,7 +8,7 @@ android {
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "pt.iade.games.ccpbeach"
+        applicationId = "pt.iade.games.peggiol"
         minSdk = 28
         targetSdk = 34
         versionCode = 1

@@ -27,10 +27,10 @@ class Trajectory(
         val angelCheck = angle + delta
         // Limit the angle to be within -90 and 90 degrees
 
-        //perform a check to see if delta is gay
+        //perform a check to see if delta is suspecious
         if (angelCheck >= -90f && angelCheck <= 90f) {
             angle = angelCheck
-            rotateObject(circles, startX, startY, -delta)
+            rotateObject(circles, startX, startY, -delta) // Rotate by delta, assuming negative delta is correct
         }
 
     }
