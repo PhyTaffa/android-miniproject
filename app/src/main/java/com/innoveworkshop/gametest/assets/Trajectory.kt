@@ -18,23 +18,13 @@ class Trajectory(
 
     public var angle = 0f
 
-    init {
-
-    }
-
     override fun onFixedUpdate() {
         super.onFixedUpdate()
-
-        Log.d("angle", angle.toString())
-        //trajectoryPlotting(angle)
     }
 
     fun variateAngle(delta: Float, circles: List<Circle>, startX: Int, startY: Int) {
-        // Update the angle
-        //angle += delta
 
         val angelCheck = angle + delta
-
         // Limit the angle to be within -90 and 90 degrees
         if (angelCheck >= -90f && angelCheck <= 90f) {
             angle = angelCheck
@@ -61,10 +51,6 @@ class Trajectory(
 
         // Calculate the new x and y end positions based on the direction
         val (endX, endY) = normalize(directionX, directionY)
-//        val endX = direction_x
-//        val endY = direction_y
-
-        Log.e("punti finali", "X: $endX  Y: $endY")
 
         // Return the new position as a Pair of x and y
         return Pair(endX, endY)
@@ -89,31 +75,21 @@ class Trajectory(
 
     fun rotateObject(circles: List<Circle>, startX: Int, startY: Int, angleDiff: Float) {
         val angleInRadians = Math.toRadians(angleDiff.toDouble())
-        //val angleInRadiansZeroed = Math.toRadians(0.toDouble())
 
-        // Loop through each circle with index, print initial position, and apply rotation
         circles.forEachIndexed { index, circle ->
-            // Print the position of the circle before rotation
-            //println("Circle #$index - Before rotation: x = ${circle.position.x}, y = ${circle.position.y}")
-
-
-
             // Translate the object to origin (relative to the rotation center)
-            val translatedX = circle.position.x - startX
-            val translatedY = circle.position.y - startY
+            val translatedX = circle.position.x - this.startX
+            val translatedY = circle.position.y - this.startY
 
 
 
             // Apply the rotation matrix
-            val newX = translatedX * cos(angleInRadians) - translatedY * sin(angleInRadians) + startX
-            val newY = translatedX * sin(angleInRadians) + translatedY * cos(angleInRadians) + startY
+            val newX = translatedX * cos(angleInRadians) - translatedY * sin(angleInRadians) + this.startX
+            val newY = translatedX * sin(angleInRadians) + translatedY * cos(angleInRadians) + this.startY
 
             // Update the circle's position directly
             circle.position.x = newX.toFloat()
             circle.position.y = newY.toFloat()
-
-            // Print the position of the circle after rotation
-            //println("Circle #$index - After rotation: x = ${circle.position.x}, y = ${circle.position.y}")
         }
     }
 

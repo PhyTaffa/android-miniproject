@@ -18,11 +18,11 @@ open class Circle(x: Float, y: Float, var radius: Float, var color: Int, var val
     }
 
     override fun hitLeftWall(): Boolean {
-        return (position.x - radius) <= 0
+        return (position.x - radius - radius/2) <= 0
     }
 
     override fun hitRightWall(): Boolean {
-        return (position.x + radius) >= gameSurface!!.width
+        return (position.x + radius + radius/2) >= gameSurface!!.width
     }
 
     override val isFloored: Boolean

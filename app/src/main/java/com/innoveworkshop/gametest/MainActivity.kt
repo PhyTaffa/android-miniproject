@@ -10,6 +10,7 @@ import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.alpha
 import com.innoveworkshop.gametest.assets.DroppingCircle
@@ -204,8 +205,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         private fun simulateTrajecotry(surface: GameSurface) {
-            val drawRadius = 50f;
-            val drawDeltaY = (startY).toFloat() + drawRadius * 2
+            val drawRadius = 40f;
+            val drawDeltaY = (startY).toFloat() + drawRadius * 3
 
             val numbOfCircleTraj = 4
 
@@ -270,58 +271,43 @@ class MainActivity : AppCompatActivity() {
             if (ball!!.hitCeiling())
                 ball!!.mirrorYVelocity()
 
-// Save the positions of the circles
+
+
+
             if (ball!!.isLaunched) {
                 for(circleTraj in circleTrajList){
                     circleTraj.paint.color = Color.argb(0, 255, 255,255,)
-//                    circleTraj.position.x = -100f
-//                    circleTraj.position.y = -100f
                 }
-//                circleTrajList.forEachIndexed { i, circleTraj ->
-//                    circleTraj.color = Color.argb(0, 255, 255,255,)
-////                    circleTrajListPos[i].set(circleTraj.position.x, circleTraj.position.y)
-////                    circleTraj.position.x = -100f
-////                    circleTraj.position.y = -100f
-//                }
             }
 
-// Restore the positions of the circles
+
             if (ball!!.isFloored) {
                 ball!!.resetPosition()
                 val mainHandler = Handler(Looper.getMainLooper())
                 mainHandler.post {
                     ballCounterTextView?.text = "Ball Counter: ${ball!!.counter}"
+                    noMoreBallsCounter()
+                    noMorePeg()
                 }
                 for(circleTraj in circleTrajList){
                     circleTraj.paint.color = Color.argb(100, 255, 255,255,)
-//                    circleTraj.position.x = -100f
-//                    circleTraj.position.y = -100f
                 }
-//                circleTrajList.forEachIndexed { i, circleTraj ->
-//                    circleTraj.position.x = circleTrajListPos[i].x
-//                    circleTraj.position.y = circleTrajListPos[i].y
-//                }
+
             }
+
 
         }
 
-        private fun displayRotateCircleTrajectory() {
-            if(ball!!.isLaunched){
-                for(circleTraj in circleTrajList){
-
-                    circleTraj.position.x = -100f
-                    circleTraj.position.y = -100f
-                }
-            } else if(!ball!!.isLaunched){
-                repeat(circleTrajList.size) { i ->
-                    // Update the position of each Circle in circleTrajList
-                    val circleTraj = circleTrajList[i]
-                    circleTraj.position.x = circleTrajListPos[i].x
-                    circleTraj.position.y = circleTrajListPos[i].y
-                }
+        private fun noMoreBallsCounter() {
+            if (ball!!.counter <= 0) {
+                Toast.makeText(this@MainActivity, "No more balls!", Toast.LENGTH_LONG).show()
             }
         }
 
-
+        private fun noMorePeg() {
+            if (circleList.size <= 0) {\
+                Toast.makeText(this@MainActivity, "Peggle layout completed!!1!", Toast.LENGTH_LONG).show()
+            }
+        }
     }
 }
