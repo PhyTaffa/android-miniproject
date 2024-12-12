@@ -23,7 +23,7 @@ class DroppingCircle(
     private var velocityDeprecation = 10f;
     private var deprecationPerFrame = velocityDeprecation / 60f
 
-    public var counter = 1;
+    public var counter = 3;
 
     private var startX = 0f;
     private var startY = 0f;

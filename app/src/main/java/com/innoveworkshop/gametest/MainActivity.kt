@@ -145,7 +145,7 @@ class MainActivity : AppCompatActivity() {
                 10f,
                 Color.rgb(100, 140, 0),
                 0,
-                5
+                3
             )
             surface.addGameObject(ball!!)
 
