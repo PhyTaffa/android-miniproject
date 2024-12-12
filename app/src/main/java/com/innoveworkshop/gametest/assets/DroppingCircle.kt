@@ -55,11 +55,11 @@ class DroppingCircle(
     fun velocityCalculator() {
 
 
-        var minClampX = -50f
-        var maxClampX = 50f
+        var minClampX = -40f
+        var maxClampX = 40f
 
-        var minClampY = -60f
-        var maxClampY = 50f
+        var minClampY = -50f
+        var maxClampY = 40f
 
 
         // X Velocity Damping (Friction/Drag)
@@ -146,9 +146,9 @@ class DroppingCircle(
 
     @SuppressLint("DefaultLocale")
     private fun BounceCalculator(directionX :Float, directionY: Float, collisionRelativePos: Float){
-        var scaleFactorX = 60f;
-        var scaleFactorYUp = 2000f;
-        var scaleFactorYDown = 1000f;
+        var scaleFactorX = 50f;
+        var scaleFactorYUp = 90f;
+        var scaleFactorYDown = 40f;
 
         var magnitude = Math.sqrt((directionX * directionX + directionY * directionY).toDouble())
         //resets the velocity for smoother bounce
@@ -158,7 +158,7 @@ class DroppingCircle(
 
         velocity.x += directionX/magnitude.toFloat() * scaleFactorX;
 
-        if(this.position.y <= collisionRelativePos)
+        if(this.position.y >= collisionRelativePos)
         {
             velocity.y += directionY/magnitude.toFloat() * scaleFactorYUp;
         }else{

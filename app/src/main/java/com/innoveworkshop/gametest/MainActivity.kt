@@ -305,7 +305,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         private fun noMorePeg() {
-            if (circleList.size <= 0) {\
+            if (circleList.size <= 0) {
                 Toast.makeText(this@MainActivity, "Peggle layout completed!!1!", Toast.LENGTH_LONG).show()
             }
         }
